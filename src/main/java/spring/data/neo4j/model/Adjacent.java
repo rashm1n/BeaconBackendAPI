@@ -8,8 +8,8 @@ public class Adjacent {
     @GeneratedValue
     private Long id;
 
-    private Double angle;
-    private Double cost;
+    private int angle;
+    private int cost;
 
     @StartNode
     private Beacon startBeacon;
@@ -20,26 +20,26 @@ public class Adjacent {
     public Adjacent() {
     }
 
-    public Adjacent(Double angle, Double cost, Beacon startBeacon, Beacon endBeacon) {
+    public Adjacent(int angle, int cost, Beacon startBeacon, Beacon endBeacon) {
         this.angle = angle;
         this.cost = cost;
         this.startBeacon = startBeacon;
         this.endBeacon = endBeacon;
     }
 
-    public Double getAngle() {
+    public int getAngle() {
         return angle;
     }
 
-    public void setAngle(Double angle) {
+    public void setAngle(int angle) {
         this.angle = angle;
     }
 
-    public Double getCost() {
+    public int getCost() {
         return cost;
     }
 
-    public void setCost(Double cost) {
+    public void setCost(int cost) {
         this.cost = cost;
     }
 
