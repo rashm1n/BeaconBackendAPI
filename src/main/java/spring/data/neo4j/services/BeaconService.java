@@ -7,6 +7,7 @@ import spring.data.neo4j.model.Beacon;
 import spring.data.neo4j.repositories.BeaconRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BeaconService {
@@ -25,21 +26,25 @@ public class BeaconService {
 
     @Transactional(readOnly = true)
     public List<Beacon> findBeacons(){
-        List<Beacon> l = beaconRepository.findaBeacons();
-        return l;
+        return beaconRepository.findaBeacons();
+
     }
 
     @Transactional(readOnly = true)
     public List<Adjacent> findAdj(){
-        List<Adjacent> l = beaconRepository.findaRelationship();
-        return l;
+        return beaconRepository.findaRelationship();
     }
 
     @Transactional(readOnly = true)
-    public List<Beacon> findS(){
-        List<Beacon> l = beaconRepository.findashortest();
-        return l;
+    public Iterable<Map<String, Object>> findS(String s,String d){
+        return beaconRepository.findashortest(s,d);
+
     }
 
+    @Transactional(readOnly = true)
+    public List<Beacon> getDestinations(){
+        return beaconRepository.getAllDestinations();
+
+    }
 
 }

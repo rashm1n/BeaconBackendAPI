@@ -2,13 +2,18 @@ package spring.data.neo4j.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import spring.data.neo4j.model.Adjacent;
 import spring.data.neo4j.model.Beacon;
+import spring.data.neo4j.model.Busyness;
+import spring.data.neo4j.model.IniBeacon;
 import spring.data.neo4j.services.AdjacentService;
 import spring.data.neo4j.services.BeaconService;
+import spring.data.neo4j.services.InitialBeaconService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/")
@@ -16,20 +21,38 @@ public class BeaconController {
 
     private final BeaconService beaconService;
     private final AdjacentService adjacentService;
+    private final InitialBeaconService initialBeaconService;
 
-    public BeaconController(BeaconService beaconService, AdjacentService adjacentService) {
+    public BeaconController(BeaconService beaconService, AdjacentService adjacentService, InitialBeaconService initialBeaconService) {
         this.beaconService = beaconService;
         this.adjacentService = adjacentService;
+        this.initialBeaconService = initialBeaconService;
     }
 
 //    @GetMapping("/test")
 //    public UserQueryResult getB(){
 //        return beaconService.findBeacon();
 //    }
+    @GetMapping("/getAllInitial")
+    public List<IniBeacon> getIni()
+    {
+        return initialBeaconService.getIniBeacons();
+    }
 
-    @GetMapping("/test2")
-    public List<Beacon> getBB(){
-        return beaconService.findS();
+    @GetMapping("/getBusyness")
+    public Busyness getBusy()
+    {
+        return initialBeaconService.getBusyness();
+    }
+
+    @GetMapping("/getDestinations")
+    public List<Beacon> getDest(){
+        return beaconService.getDestinations();
+    }
+
+    @GetMapping("/calculatePath")
+    public Iterable<Map<String, Object>> getBB(@RequestParam String s,@RequestParam String d){
+        return beaconService.findS(s,d);
     }
 
     @GetMapping("/test3")
