@@ -21,13 +21,22 @@ public interface BeaconRepository extends Neo4jRepository<Beacon,String> {
     @Query("match (b:Beacon)-[a]->(c:Beacon) where c.MAC=\"f:f:f:f\" return a")
     List<Adjacent> findaRelationship();
 
-    @Query("MATCH (start:Beacon{MAC:{0}}),(end:Beacon{MAC:{1}})\n" +
+    @Query("MATCH (start:IniBeacon{MAC:{0}}),(end:Beacon{MAC:{1}})\n" +
             "CALL algo.shortestPath.stream(start, end, \"cost\")\n" +
             "YIELD nodeId, cost\n" +
             "MATCH (other:Beacon) WHERE id(other) = nodeId\n" +
             "RETURN cost,other")
     Iterable<Map<String, Object>> findashortest(String mac1,String mac2);
 
+//    MATCH (start:IniBeacon{MAC:"C2:B6:6E:70:FA:F7"}), (end:Beacon{MAC:"e:r:e:r"})
+//    CALL algo.shortestPath.stream(start, end, "cost")
+//    YIELD nodeId, cost
+//    MATCH (other:Beacon) WHERE id(other) = nodeId
+//    RETURN other.MAC AS name, cost
+
+
+
     @Query("match (b:Beacon:Endpoint) return b")
     List<Beacon> getAllDestinations();
+
 }
