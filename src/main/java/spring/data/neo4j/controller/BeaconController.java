@@ -1,5 +1,6 @@
 package spring.data.neo4j.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class BeaconController {
 
     private final BeaconService beaconService;
@@ -33,35 +34,41 @@ public class BeaconController {
 //    public UserQueryResult getB(){
 //        return beaconService.findBeacon();
 //    }
+
+    @ApiOperation(value = "Returns all Initialization Beacons in The Beacon Database",
+    notes = "This is called when a user is entered to a building to determine if he is in a building which has implmented our system")
     @GetMapping("/getAllInitial")
-    public List<IniBeacon> getIni()
+    public List<IniBeacon> getAllInitializatioBeacons()
     {
         return initialBeaconService.getIniBeacons();
     }
 
+    @ApiOperation(value = "Returns the busyness of a given building")
     @GetMapping("/getBusyness")
-    public Busyness getBusy()
+    public Busyness getBusyness()
     {
         return initialBeaconService.getBusyness();
     }
 
+    @ApiOperation(value = "Returns all Destinations in a given building")
     @GetMapping("/getDestinations")
-    public List<Beacon> getDest(){
+    public List<Beacon> getDestinations(){
         return beaconService.getDestinations();
     }
 
+    @ApiOperation(value = "Returns the shortest path between given two MAC addresses")
     @GetMapping("/calculatePath")
-    public Iterable<Map<String, Object>> getBB(@RequestParam String s,@RequestParam String d){
+    public Iterable<Map<String, Object>> getShortestPath(@RequestParam String s,@RequestParam String d){
         return beaconService.findS(s,d);
     }
 
-    @GetMapping("/test3")
-    public List<Adjacent> getR(){
-        return beaconService.findAdj();
-    }
-
-    @GetMapping("/test4")
-    public Adjacent getRR(){
-        return adjacentService.findAdjj();
-    }
+//    @GetMapping("/test3")
+//    public List<Adjacent> getR(){
+//        return beaconService.findAdj();
+//    }
+//
+//    @GetMapping("/test4")
+//    public Adjacent getRR(){
+//        return adjacentService.findAdjj();
+//    }
 }
