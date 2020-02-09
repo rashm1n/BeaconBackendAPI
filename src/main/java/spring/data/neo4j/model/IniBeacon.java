@@ -1,5 +1,6 @@
 package spring.data.neo4j.model;
 
+import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -9,24 +10,18 @@ import java.util.List;
 
 @NodeEntity
 public class IniBeacon {
-    @Id
+
+    @Id @GeneratedValue
+    private Long id;
+
     private String MAC;
     private String description;
 
     @Relationship(type = "ADJACENT")
     private List<Adjacent> adjacentList = new ArrayList<>();
 
-    @Relationship(type = "HAS")
-    private Busyness busyness;
 
     public IniBeacon() {
-    }
-
-    public IniBeacon(String MAC, String description, List<Adjacent> adjacentList, Busyness busyness) {
-        this.MAC = MAC;
-        this.description = description;
-        this.adjacentList = adjacentList;
-        this.busyness = busyness;
     }
 
     public IniBeacon(String MAC, String description, List<Adjacent> adjacentList) {
@@ -34,6 +29,11 @@ public class IniBeacon {
         this.description = description;
         this.adjacentList = adjacentList;
     }
+
+    public Long getId() {
+        return id;
+    }
+
 
     public String getMAC() {
         return MAC;

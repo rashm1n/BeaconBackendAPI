@@ -1,20 +1,27 @@
 package spring.data.neo4j.model;
 
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.neo4j.ogm.annotation.*;
+import org.neo4j.procedure.Name;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
 public class Beacon {
-    @Id
+    @Id @GeneratedValue
+    private Long id;
+
+    @Property(name = "MAC")
     private String MAC;
     private String description;
     private String location;
 
-//    @Relationship(type = "ADJACENT")
+    public void setAdjacentList(List<Adjacent> adjacentList) {
+        this.adjacentList = adjacentList;
+    }
+
+    //    @Relationship(type = "ADJACENT")
 //    private List<Beacon> adjacentBeaconsOutgoing = new ArrayList<>();
 //
 //    @Relationship(type = "ADJACENT",direction = Relationship.INCOMING)
@@ -22,6 +29,11 @@ public class Beacon {
 
     @Relationship(type = "ADJACENT")
     private List<Adjacent> adjacentList = new ArrayList<>();
+
+
+    public Long getId() {
+        return id;
+    }
 
     public Beacon() {
     }

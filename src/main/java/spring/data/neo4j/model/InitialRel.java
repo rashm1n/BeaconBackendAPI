@@ -2,8 +2,8 @@ package spring.data.neo4j.model;
 
 import org.neo4j.ogm.annotation.*;
 
-@RelationshipEntity(type = "ADJACENT")
-public class Adjacent {
+@RelationshipEntity(type = "INITIAL_REL")
+public class InitialRel {
     @Id
     @GeneratedValue
     private Long id;
@@ -15,15 +15,15 @@ public class Adjacent {
     private int cost;
 
     @StartNode
-    private Beacon startBeacon;
+    private IniBeacon startBeacon;
 
     @EndNode
     private Beacon endBeacon;
 
-    public Adjacent() {
+    public InitialRel() {
     }
 
-    public Adjacent(int angle, int cost, Beacon startBeacon, Beacon endBeacon) {
+    public InitialRel(int angle, int cost, IniBeacon startBeacon, Beacon endBeacon) {
         this.angle = angle;
         this.cost = cost;
         this.startBeacon = startBeacon;
@@ -46,11 +46,11 @@ public class Adjacent {
         this.cost = cost;
     }
 
-    public Beacon getStartBeacon() {
+    public IniBeacon getStartBeacon() {
         return startBeacon;
     }
 
-    public void setStartBeacon(Beacon startBeacon) {
+    public void setStartBeacon(IniBeacon startBeacon) {
         this.startBeacon = startBeacon;
     }
 

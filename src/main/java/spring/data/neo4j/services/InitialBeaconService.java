@@ -3,12 +3,10 @@ package spring.data.neo4j.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spring.data.neo4j.model.Busyness;
 import spring.data.neo4j.model.IniBeacon;
 import spring.data.neo4j.repositories.IniBeaconRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class InitialBeaconService {
@@ -20,9 +18,11 @@ public class InitialBeaconService {
         return iniBeaconRepository.initialBeaconList();
     }
 
+
     @Transactional
-    public Busyness getBusyness(){
-        return iniBeaconRepository.business();
-    }
+    public IniBeacon createIniBeacon(String s1,String s2){return iniBeaconRepository.createIniBeacon(s1,s2);}
+
+    @Transactional
+    public IniBeacon cb(IniBeacon iniBeacon){return iniBeaconRepository.save(iniBeacon);}
 
 }

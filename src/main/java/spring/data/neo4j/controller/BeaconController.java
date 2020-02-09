@@ -1,18 +1,14 @@
 package spring.data.neo4j.controller;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import spring.data.neo4j.model.Adjacent;
-import spring.data.neo4j.model.Beacon;
-import spring.data.neo4j.model.Busyness;
-import spring.data.neo4j.model.IniBeacon;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import spring.data.neo4j.model.*;
 import spring.data.neo4j.services.AdjacentService;
 import spring.data.neo4j.services.BeaconService;
 import spring.data.neo4j.services.InitialBeaconService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +20,10 @@ public class BeaconController {
     private final AdjacentService adjacentService;
     private final InitialBeaconService initialBeaconService;
 
+
     public BeaconController(BeaconService beaconService, AdjacentService adjacentService, InitialBeaconService initialBeaconService) {
         this.beaconService = beaconService;
+
         this.adjacentService = adjacentService;
         this.initialBeaconService = initialBeaconService;
     }
@@ -40,14 +38,45 @@ public class BeaconController {
     @GetMapping("/getAllInitial")
     public List<IniBeacon> getAllInitializatioBeacons()
     {
+        //emailService.sendMail("hashmdesilva@gmail.com", "Test subject", "Test mail");
         return initialBeaconService.getIniBeacons();
     }
 
-    @ApiOperation(value = "Returns the busyness of a given building")
-    @GetMapping("/getBusyness")
-    public Busyness getBusyness()
-    {
-        return initialBeaconService.getBusyness();
+
+    @ApiOperation(value = "Creates a new Initialization Node")
+    @GetMapping("/createIniBeacon")
+    public IniBeacon createIniBeacon(@RequestParam String MAC, @RequestParam String description){
+        return initialBeaconService.createIniBeacon(MAC, description);
+    }
+
+    @ApiOperation(value = "Creates a new Beacon Node")
+    @GetMapping("/createBeacon")
+    public Beacon createBeacon(@RequestParam String MAC, @RequestParam String description, @RequestParam String location){
+        return beaconService.createBeacon(MAC, description, location);
+    }
+
+    @ApiOperation(value = "Creates a new Beacon Node")
+    @PostMapping("/createBeacons")
+    public ResponseEntity<List<BeaconRequestModel>> createBeacons(@RequestBody List<BeaconRequestModel> beacons){
+        List<Beacon> beaconList = new ArrayList<>();
+        for (BeaconRequestModel b:beacons){
+            Beacon beacon = new Beacon();
+            beacon.setMAC(b.getMac());
+            System.out.println(b.getMac());
+            beacon.setDescription(b.getDescription());
+            beacon.setLocation(b.getLocation());
+            beacon.setAdjacentList(new ArrayList<>());
+            beaconList.add(beacon);
+        }
+        beaconService.createBeacons(beaconList);
+        return ResponseEntity.ok(beacons);
+    }
+
+
+    @ApiOperation(value = "Create a Relationship between two nodes")
+    @GetMapping("/createRel")
+    public Adjacent createRel(@RequestParam String m1, @RequestParam String m2, @RequestParam int a,@RequestParam int c){
+        return adjacentService.createRel(m1, m2, a, c);
     }
 
     @ApiOperation(value = "Returns all Destinations in a given building")
@@ -61,6 +90,38 @@ public class BeaconController {
     public Iterable<Map<String, Object>> getShortestPath(@RequestParam String s,@RequestParam String d){
         return beaconService.findS(s,d);
     }
+
+    @GetMapping("/getBeacon")
+    public Beacon getBeacon(@RequestParam String m){
+        return beaconService.getBeacon(m);
+    }
+
+    @GetMapping("/findBeacon")
+    public Beacon findBeacon(@RequestParam String m){
+        return beaconService.findBeacon(m);
+    }
+
+    @GetMapping("/getRel")
+    public Adjacent findRel(@RequestParam String m1,@RequestParam String m2)
+    {
+        Adjacent adjacent = beaconService.findAdj(m1, m2);
+        System.out.println(adjacent.getAngle());
+        return adjacent;
+    }
+
+    @GetMapping("/getIniRel")
+    public InitialRel findIniRel(@RequestParam String m1, @RequestParam String m2)
+    {
+        //        System.out.println(adjacent.getAngle());
+        return beaconService.findIniAdj(m1, m2);
+    }
+
+    @PostMapping("/cb")
+    public IniBeacon cb(@RequestBody IniBeacon iniBeacon){
+        System.out.println(iniBeacon.getMAC());
+        return initialBeaconService.cb(iniBeacon);
+    }
+
 
 //    @GetMapping("/test3")
 //    public List<Adjacent> getR(){
