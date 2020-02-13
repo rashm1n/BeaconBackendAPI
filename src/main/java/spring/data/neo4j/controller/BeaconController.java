@@ -1,5 +1,6 @@
 package spring.data.neo4j.controller;
 
+import com.google.gson.Gson;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +64,7 @@ public class BeaconController {
             Beacon beacon = new Beacon();
             beacon.setMAC(b.getMac());
             System.out.println(b.getMac());
-            beacon.setDescription(b.getDescription());
+//            beacon.setDescription(b.getDescription());
             beacon.setLocation(b.getLocation());
             beacon.setAdjacentList(new ArrayList<>());
             beaconList.add(beacon);
@@ -79,6 +80,25 @@ public class BeaconController {
         return adjacentService.createRel(m1, m2, a, c);
     }
 
+    @ApiOperation(value = "create multiple relationships")
+    @PostMapping("/createRels")
+    public List<RelationshipRequest> createRels(@RequestBody List<RelationshipRequest> relationshipRequests){
+        for (RelationshipRequest r:relationshipRequests){
+            adjacentService.createRel(r.getStartMac(),r.getEndMac(),r.getAngle(),r.getCost());
+        }
+
+        return relationshipRequests;
+    }
+
+    @ApiOperation(value = "create multiple initial relationships")
+    @PostMapping("/createInitialRels")
+    public List<RelationshipRequest> createInitialRels(@RequestBody List<RelationshipRequest> relationshipRequests){
+        for (RelationshipRequest r:relationshipRequests){
+            adjacentService.createInitialRel(r.getStartMac(),r.getEndMac(),r.getAngle(),r.getCost());
+        }
+        return relationshipRequests;
+    }
+
     @ApiOperation(value = "Returns all Destinations in a given building")
     @GetMapping("/getDestinations")
     public List<Beacon> getDestinations(){
@@ -87,8 +107,69 @@ public class BeaconController {
 
     @ApiOperation(value = "Returns the shortest path between given two MAC addresses")
     @GetMapping("/calculatePath")
-    public Iterable<Map<String, Object>> getShortestPath(@RequestParam String s,@RequestParam String d){
-        return beaconService.findS(s,d);
+    public List<ModelBeaconPathRequest> getShortestPath(@RequestParam String s,@RequestParam String d){
+        Iterable<Map<String, Object>> mm = beaconService.findS(s,d);
+
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add(s);
+
+
+        List<String> result = new ArrayList<String>();
+        List<Beacon> beaconList = new ArrayList<>();
+
+        List<ModelBeaconPathRequest> finalList = new ArrayList<>();
+        System.out.println(mm);
+
+        for (Map<String, Object> str : mm) {
+            Beacon b = (Beacon)str.get("other");
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaa"+b.getLocation());
+            beaconList.add(b);
+            stringArrayList.add(b.getMAC());
+//            if (b.getStaricase()!=null){
+//                JSONObject jsonObject = new JSONObject(b.getStaricase());
+//                System.out.println(jsonObject.getString("msg"));
+//            }
+        }
+
+        InitialRel initialRel = beaconService.findIniAdj(s,beaconList.get(0).getMAC());
+        Gson g = new Gson();
+        Staircase p = null;
+        if (!beaconList.get(0).getStaircase().isEmpty()) {
+            p = g.fromJson(beaconList.get(0).getStaircase(), Staircase.class);
+        }
+
+        ModelBeaconPathRequest first = new ModelBeaconPathRequest(beaconList.get(0).getMAC(),beaconList.get(0).getEndMsg(),beaconList.get(0).getJuncMsg(),initialRel.getAngle(),p,beaconList.get(0).getIsStaircase(),beaconList.get(0).getMeanNormalize1(),beaconList.get(0).getMeanNormalize2(),beaconList.get(0).getStdNormalize1(),beaconList.get(0).getStdNormalize2(),beaconList.get(0).getLocation());
+        finalList.add(first);
+
+        for (int i=0;i<beaconList.size();i++){
+            if (i+1<beaconList.size()){
+                Beacon b = beaconList.get(i+1);
+                System.out.println("bbbbbbbbbbbbbbbbbbbb"+b.getLocation());
+                Adjacent rel = beaconService.findAdj(beaconList.get(i).getMAC(),beaconList.get(i+1).getMAC());
+//                System.out.println(rel.getAngle());
+                ModelBeaconPathRequest r = new ModelBeaconPathRequest();
+
+                Staircase pp = null;
+                if (!beaconList.get(i+1).getStaircase().isEmpty()) {
+                    pp = g.fromJson(beaconList.get(i+1).getStaircase(), Staircase.class);
+                }
+
+                r.setAngle(rel.getAngle());
+                r.setEndMsg(b.getEndMsg());
+                r.setIsStaircase(b.getIsStaircase());
+                r.setJuncMsg(b.getJuncMsg());
+                r.setLocation(b.getLocation());
+                r.setMAC(b.getMAC());
+                r.setMeanNormalize1(b.getMeanNormalize1());
+                r.setMeanNormalize2(b.getMeanNormalize2());
+                r.setStdNormalize1(b.getStdNormalize1());
+                r.setStdNormalize2(b.getStdNormalize2());
+                r.setStaircase(pp);
+//                ModelBeaconPathRequest sec = new ModelBeaconPathRequest(beaconList.get(i).getMAC(),beaconList.get(i).getEndMsg(),beaconList.get(i).getJuncMsg(),rel.getAngle(),beaconList.get(i).getStaricase(),beaconList.get(i).getIsStaircase(),beaconList.get(i).getMeanNormalize1(),beaconList.get(i).getMeanNormalize2(),beaconList.get(i).getStdNormalize1(),beaconList.get(i).getStdNormalize2(),beaconList.get(i).getLocation());
+                finalList.add(r);
+            }
+        }
+        return finalList;
     }
 
     @GetMapping("/getBeacon")

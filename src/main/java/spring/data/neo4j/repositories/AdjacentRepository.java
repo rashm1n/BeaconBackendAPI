@@ -17,4 +17,7 @@ public interface AdjacentRepository extends Neo4jRepository<Adjacent,Long> {
 
     @Query("match (a:Beacon{MAC:{0}}),(b:Beacon{MAC:{1}}) create ((a)-[r:ADJACENT{angle:{2},cost:{3}}]->(b)) return r")
     Adjacent createRelationship(String m1, String m2,int angle, int cost);
+
+    @Query("match (a:IniBeacon{MAC:{0}}),(b:Beacon{MAC:{1}}) create ((a)-[r:ADJACENT{angle:{2},cost:{3}}]->(b)) return r")
+    Adjacent createInitialRelationship(String m1, String m2,int angle, int cost);
 }

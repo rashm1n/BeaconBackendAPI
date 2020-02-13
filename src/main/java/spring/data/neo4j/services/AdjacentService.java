@@ -48,6 +48,36 @@ public class AdjacentService {
 //        return adjacentRepository.save(adjacent);
     }
 
+    @Transactional
+    public Adjacent createInitialRel(String m1,String m2,int a,int c){
+
+//        Beacon b1 = beaconRepository.findaBeacon(m1);
+//        Beacon b2 = beaconRepository.findaBeacon(m2);
+//
+//        System.out.println(b1.getDescription());
+//
+//            Adjacent adjacent = new Adjacent();
+//            adjacent.setStartBeacon(b1);
+//        adjacent.setEndBeacon(b2);
+//        adjacent.setCost(c);
+//        adjacent.setAngle(a);
+//            adjacentRepository.save(adjacent);
+
+
+//        Beacon beacon = new Beacon();
+//        beacon.setMAC(m1);
+//        Beacon beacon1 = new Beacon();
+//        beacon1.setMAC(m2);
+//        Adjacent adjacent = new Adjacent();
+//        adjacent.setStartBeacon(beacon);
+//        adjacent.setEndBeacon(beacon1);
+//        adjacent.setCost(c);
+//        adjacent.setAngle(a);
+//        return adjacentRepository.save(adjacent);
+        return adjacentRepository.createInitialRelationship(m1, m2, a, c);
+//        return adjacentRepository.save(adjacent);
+    }
+
     @Transactional(readOnly = true)
     public Adjacent findAdjj(){
         Adjacent l = adjacentRepository.findaRelationshipp();

@@ -2,7 +2,7 @@ package spring.data.neo4j.model;
 
 import org.neo4j.ogm.annotation.*;
 
-@RelationshipEntity(type = "ADJACENT")
+@RelationshipEntity(type = "ADJACENT_TO")
 public class Adjacent {
     @Id
     @GeneratedValue
