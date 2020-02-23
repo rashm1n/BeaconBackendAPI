@@ -23,13 +23,13 @@ public interface BeaconRepository extends Neo4jRepository<Beacon,String> {
     @Query("match (b:Beacon)-[a:ADJACENT]-(c:Beacon) where b.MAC=\"f:f:f:f\" return b, c")
     List<Beacon> findaBeacons();
 
-    @Query("MATCH (b:Beacon{MAC:{0}})-[a:ADJACENT_TO]->(c:Beacon{MAC:{1}}) return *")
-    Adjacent findaRelationship(String m1,String m2);
+    @Query("MATCH (b:Beacon{location:{0}})-[a:ADJACENT_TO]->(c:Beacon{location:{1}}) return *")
+    Adjacent findaRelationship(String l1,String l2);
 
-    @Query("MATCH (b:IniBeacon{MAC:{0}})-[a:INITIAL_REL]->(c:Beacon{MAC:{1}}) return *")
-    InitialRel findaIniRelationship(String m1, String m2);
+    @Query("MATCH (b:IniBeacon{MAC:{0}})-[a:INITIAL_REL]->(c:Beacon{location:{1}}) return *")
+    InitialRel findaIniRelationship(String m1, String l2);
 
-    @Query("MATCH (start:IniBeacon{MAC:{0}}),(end:Beacon{MAC:{1}})\n" +
+    @Query("MATCH (start:IniBeacon{MAC:{0}}),(end:Beacon{location:{1}})\n" +
             "CALL algo.shortestPath.stream(start, end, \"cost\")\n" +
             "YIELD nodeId, cost\n" +
             "MATCH (other:Beacon) WHERE id(other) = nodeId\n" +

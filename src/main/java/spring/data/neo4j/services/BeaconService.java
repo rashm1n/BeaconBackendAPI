@@ -47,6 +47,22 @@ public class BeaconService {
         return "saved";
     }
 
+    @Transactional
+    public Beacon createBeacon(Beacon b){
+        return beaconRepository.save(b);
+    }
+
+    @Transactional
+    public String deleteBeacon(String mac){
+        Beacon b = getBeacon(mac);
+        try {
+            beaconRepository.delete(b);
+            return "deleted";
+        }catch (NullPointerException n){
+            return "no such beacon";
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Beacon> findBeacons(){
         return beaconRepository.findaBeacons();
@@ -54,18 +70,18 @@ public class BeaconService {
     }
 
     @Transactional(readOnly = true)
-    public Adjacent findAdj(String m1,String m2){
-        return beaconRepository.findaRelationship(m1, m2);
+    public Adjacent findAdj(String l1,String l2){
+        return beaconRepository.findaRelationship(l1, l2);
     }
 
     @Transactional(readOnly = true)
-    public InitialRel findIniAdj(String m1, String m2){
-        return beaconRepository.findaIniRelationship(m1, m2);
+    public InitialRel findIniAdj(String m1, String l2){
+        return beaconRepository.findaIniRelationship(m1, l2);
     }
 
     @Transactional(readOnly = true)
-    public Iterable<Map<String, Object>> findS(String s,String d){
-        return beaconRepository.findashortest(s,d);
+    public Iterable<Map<String, Object>> findS(String l1,String l2){
+        return beaconRepository.findashortest(l1,l2);
 
     }
 

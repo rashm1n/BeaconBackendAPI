@@ -1,5 +1,7 @@
 package spring.data.neo4j.model;
 
+import com.google.gson.Gson;
+
 public class ModelBeaconPathRequest {
     private String MAC;
     private String endMsg;
@@ -38,6 +40,22 @@ public class ModelBeaconPathRequest {
     }
 
     public ModelBeaconPathRequest() {
+    }
+
+    public static Beacon convertToBeacon(ModelBeaconPathRequest modelBeaconPathRequest){
+        Beacon beacon = new Beacon();
+        beacon.setLocation(modelBeaconPathRequest.getLocation());
+        beacon.setMAC(modelBeaconPathRequest.getMAC());
+        beacon.setEndMsg(modelBeaconPathRequest.getEndMsg());
+        beacon.setJuncMsg(modelBeaconPathRequest.getJuncMsg());
+        beacon.setIsStaircase(modelBeaconPathRequest.getIsStaircase());
+        beacon.setMeanNormalize1(modelBeaconPathRequest.getMeanNormalize1());
+        beacon.setMeanNormalize2(modelBeaconPathRequest.getMeanNormalize2());
+        beacon.setStdNormalize1(modelBeaconPathRequest.getStdNormalize1());
+        beacon.setStdNormalize2(modelBeaconPathRequest.getStdNormalize2());
+        Gson g = new Gson();
+        beacon.setStaircase(g.toJson(modelBeaconPathRequest.getStaircase(),Staircase.class).toString());
+        return beacon;
     }
 
     public String getMAC() {
